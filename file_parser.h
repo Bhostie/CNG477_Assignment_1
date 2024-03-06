@@ -17,6 +17,7 @@
 #include"camera.h"
 #include"mesh.h"
 #include"pointlight.h"
+#include"material.h"
 
 using Eigen::Vector3f;
 using Eigen::Vector3i;
@@ -58,6 +59,7 @@ class parser{
         vector<triangle> triangleList;
         vector<mesh> meshList;
         vector<PointLight> pointLightList;
+        vector<Material> materialList;
 
         parser(string name);
         void print_file();

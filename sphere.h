@@ -31,6 +31,9 @@ class sphere{
         double getradius(){
             return radius;
         }
+        int get_material_index(){
+            return material_index;
+        }
 
         bool hit_check(const ray& r) {
 
@@ -43,33 +46,34 @@ class sphere{
             return (discriminant > 0);
     
         }
+        Vector3f getHitPoint(const ray& r) {
+            Vector3f oc = r.origin() - center;
+            double a = r.direction().normalized().dot(r.direction().normalized());
+            double b = oc.dot(r.direction().normalized()) * 2.0;
+            double c = oc.dot(oc) - radius*radius;
+            float discriminant = b*b - 4*a*c;
+            float t = (-b - std::sqrt(discriminant)) / (2.0 * a);
+            return r.origin() + r.direction() * t;
+        }
         
         Vector3f get_normal(const Vector3f& p) const {
             return (p - center).normalized();
         }
         
-        Vector3f get_color_with_lights(vector<PointLight>& plList) {
-            Vector3f color(0, 0, 0);
-            for (int i = 0; i < plList.size(); ++i) {
+        Vector3f get_color_with_lights(vector<PointLight>& plList, const ray& r, Material& material) {
+            Vector3f hitPoint = getHitPoint(r);
+            Vector3f normal = get_normal(hitPoint);
+            Vector3f view = -r.direction();
+            Vector3f ambientIntensity = Vector3f(0.1, 0.1, 0.1);
+            Vector3f color = Vector3f(0, 0, 0);
+            for (int i = 0; i < plList.size(); i++) {
                 PointLight pl = plList[i];
-                Vector3f l = pl.get_position() - center; // Assuming center is the position of your sphere
-                float s = l.norm() * l.norm(); // Apply inverse square law
-                l = l.normalized();
-                Vector3f normal = get_normal(pl.get_position()); // Assuming this returns the correct surface normal
-                float m = l.dot(normal);
-                if (m > 0) {
-                    color += (pl.get_intensity() / s) * m;
+                if (!pl.is_in_shadow(ray(hitPoint, pl.get_position() - hitPoint), pl.get_distance(hitPoint))) {
+                    color += pl.get_color(hitPoint, normal, view, material, ambientIntensity);
                 }
             }
-            // make color vector values between 0 and 1
-            color = color.cwiseMax(0).cwiseMin(1);
             return color;
-}
-
-
-
-
-
+        }
 
 };
 
