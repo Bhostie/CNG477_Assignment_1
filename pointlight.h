@@ -6,6 +6,9 @@
 #include <algorithm>
 #include "material.h"
 using std::max;
+#include <algorithm>
+#include "material.h"
+using std::max;
 using Eigen::Vector3f;
 using Eigen::Vector4f;
 using Eigen::Vector2i;

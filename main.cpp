@@ -14,6 +14,8 @@ NOTE: Use "./main > output1.ppm" to create a .ppm file.
 #include "camera.h"
 #include "pointlight.h"
 #include "material.h"
+#include "pointlight.h"
+#include "material.h"
 
 
 using Eigen::Vector3f;
@@ -66,6 +68,12 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     // Getting inout file name from command line
+    // Error message for missing or extra arguments
+    if (argc != 2) {
+        std::cerr << "Usage: " << argv[0] << " input_file\n";
+        return 1;
+    }
+    // Getting inout file name from command line
     string str = argv[1];
     parser myparser(str);
 
@@ -78,6 +86,7 @@ int main(int argc, char* argv[]) {
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
     for (int j = 0 ; j < image_height ; j++) {
+        std::cerr << "\rScanlines remaining: " << image_height - j << ' ' << std::flush;
         std::cerr << "\rScanlines remaining: " << image_height - j << ' ' << std::flush;
         for (int i = 0; i < image_width; i++) {
             // Creating main ray
