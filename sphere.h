@@ -59,19 +59,35 @@ class sphere{
         Vector3f get_normal(const Vector3f& p) const {
             return (p - center).normalized();
         }
-        
-        Vector3f get_color_with_lights(vector<PointLight>& plList, const ray& r, Material& material) {
+
+
+        /* ITS NOT WORKING CORRECTLY */
+        Vector3f get_color(vector<PointLight>& plList, const ray& r, Material& material, Vector3f ambientLight) {
+
             Vector3f hitPoint = getHitPoint(r);
             Vector3f normal = get_normal(hitPoint);
-            Vector3f view = -r.direction();
-            Vector3f ambientIntensity = Vector3f(0.1, 0.1, 0.1);
-            Vector3f color = Vector3f(0, 0, 0);
+            Vector3f color = Vector3f(0, 0, 0); // color of the pixel
+            Vector3f view = r.direction().normalized();
+            Vector3f ambient = material.get_ambientColor().cwiseProduct(ambientLight);
+            Vector3f diffuseColor = material.get_diffuseColor();
+            Vector3f specularColor = material.get_specularColor();
+            float phongExponent = material.get_phongExponent();
+            Vector3f mirrorColor = material.get_mirrorColor();
+
             for (int i = 0; i < plList.size(); i++) {
                 PointLight pl = plList[i];
-                if (!pl.is_in_shadow(ray(hitPoint, pl.get_position() - hitPoint), pl.get_distance(hitPoint))) {
-                    color += pl.get_color(hitPoint, normal, view, material, ambientIntensity);
-                }
+                Vector3f lightDir = pl.get_direction(hitPoint);
+                Vector3f lightIntensity = pl.get_intensity();
+                float diff = std::max(0.0f, normal.dot(lightDir));
+                Vector3f diffuse = diff * diffuseColor.cwiseProduct(lightIntensity);
+                Vector3f reflectDir = (2.0f * normal.dot(lightDir) * normal - lightDir).normalized();
+                float spec = std::pow(std::max(0.0f, view.dot(reflectDir)), phongExponent);
+                Vector3f specular = spec * specularColor.cwiseProduct(lightIntensity);
+                color += (diffuse + specular);
             }
+            color += material.get_ambientColor().cwiseProduct(ambientLight);
+            
+
             return color;
         }
 

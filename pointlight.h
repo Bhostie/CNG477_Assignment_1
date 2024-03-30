@@ -65,9 +65,6 @@ class PointLight{
             Vector3f specular = pow(spec, phongExponent) * specularColor.cwiseProduct(lightIntensity);
             return ambient + diffuse + specular;
         }
-        bool is_in_shadow(const ray& r, float distance) {
-            return (r.direction().norm() < distance);
-        }
 };
 
 #endif

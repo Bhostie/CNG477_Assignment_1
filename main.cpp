@@ -31,13 +31,14 @@ Vector3f ray_color(const ray& r,
                     vector<mesh>&mList,
                     vector<PointLight>&plList,
                     vector<Material>&materialList,
-                    Vector3f background) {
+                    Vector3f background,
+                    Vector3f ambientLight) {
 
     for(int i=0; i<sList.size(); i++){
 
         sphere s = sList[i];
         if (s.hit_check(r) == true){
-        return s.get_color_with_lights(plList,r, materialList[s.get_material_index() - 1]);
+        return s.get_color(plList,r, materialList[s.get_material_index() - 1], ambientLight);
         }
     }
     for(int i=0; i<tList.size(); i++){
@@ -81,7 +82,14 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < image_width; i++) {
             // Creating main ray
             ray r = cam.getRay(i,j);
-            Vector3f pixel_color = ray_color(r, myparser.sphereList, myparser.triangleList, myparser.meshList, myparser.pointLightList, myparser.materialList, myparser.BackgroundColor); 
+            Vector3f pixel_color = ray_color(r, myparser.sphereList,
+            myparser.triangleList,
+            myparser.meshList,
+            myparser.pointLightList,
+            myparser.materialList,
+            myparser.BackgroundColor,
+            myparser.AmbientLight
+            ); 
             write_color(std::cout, pixel_color);
         }
     }
