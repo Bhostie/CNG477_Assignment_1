@@ -102,7 +102,7 @@ class sphere{
 
             return color;
         }
-        }
+        
 
 };
 
