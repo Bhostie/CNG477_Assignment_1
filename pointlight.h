@@ -6,6 +6,9 @@
 #include <algorithm>
 #include "material.h"
 using std::max;
+#include <algorithm>
+#include "material.h"
+using std::max;
 using Eigen::Vector3f;
 using Eigen::Vector4f;
 using Eigen::Vector2i;
@@ -64,9 +67,6 @@ class PointLight{
             float spec = max(0.0f, view.dot(reflectDir));
             Vector3f specular = pow(spec, phongExponent) * specularColor.cwiseProduct(lightIntensity);
             return ambient + diffuse + specular;
-        }
-        bool is_in_shadow(const ray& r, float distance) {
-            return (r.direction().norm() < distance);
         }
 };
 

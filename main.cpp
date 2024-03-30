@@ -14,6 +14,8 @@ NOTE: Use "./main > output1.ppm" to create a .ppm file.
 #include "camera.h"
 #include "pointlight.h"
 #include "material.h"
+#include "pointlight.h"
+#include "material.h"
 
 
 using Eigen::Vector3f;
@@ -31,13 +33,14 @@ Vector3f ray_color(const ray& r,
                     vector<mesh>&mList,
                     vector<PointLight>&plList,
                     vector<Material>&materialList,
-                    Vector3f background) {
+                    Vector3f background,
+                    Vector3f ambientLight) {
 
     for(int i=0; i<sList.size(); i++){
 
         sphere s = sList[i];
         if (s.hit_check(r) == true){
-        return s.get_color_with_lights(plList,r, materialList[s.get_material_index() - 1]);
+        return s.get_color(plList,r, materialList[s.get_material_index() - 1], ambientLight);
         }
     }
     for(int i=0; i<tList.size(); i++){
@@ -65,6 +68,12 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     // Getting inout file name from command line
+    // Error message for missing or extra arguments
+    if (argc != 2) {
+        std::cerr << "Usage: " << argv[0] << " input_file\n";
+        return 1;
+    }
+    // Getting inout file name from command line
     string str = argv[1];
     parser myparser(str);
 
@@ -78,10 +87,18 @@ int main(int argc, char* argv[]) {
 
     for (int j = 0 ; j < image_height ; j++) {
         std::cerr << "\rScanlines remaining: " << image_height - j << ' ' << std::flush;
+        std::cerr << "\rScanlines remaining: " << image_height - j << ' ' << std::flush;
         for (int i = 0; i < image_width; i++) {
             // Creating main ray
             ray r = cam.getRay(i,j);
-            Vector3f pixel_color = ray_color(r, myparser.sphereList, myparser.triangleList, myparser.meshList, myparser.pointLightList, myparser.materialList, myparser.BackgroundColor); 
+            Vector3f pixel_color = ray_color(r, myparser.sphereList,
+            myparser.triangleList,
+            myparser.meshList,
+            myparser.pointLightList,
+            myparser.materialList,
+            myparser.BackgroundColor,
+            myparser.AmbientLight
+            ); 
             write_color(std::cout, pixel_color);
         }
     }
