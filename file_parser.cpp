@@ -127,6 +127,28 @@ parser::parser(string name){
                 i++;
                 getTokens(tokens, whole_file[i]);
                 main_camera.setResolution(Vector2i(std::stoi(tokens[0]) ,std::stoi(tokens[1])));
+                tokens.clear();
+                break;
+
+            case 5:
+                getTokens(tokens, whole_file[i]);
+                i++;
+                getTokens(tokens, whole_file[i]);
+                i++;
+                getTokens(tokens, whole_file[i]);
+                i++;
+                getTokens(tokens, whole_file[i]);
+                i++;
+                getTokens(tokens, whole_file[i]);
+                i++;
+                getTokens(tokens, whole_file[i]);
+                materialList.push_back(Material(std::stoi(tokens[0]), 
+                                               Vector3f(std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3])),
+                                               Vector3f(std::stof(tokens[4]), std::stof(tokens[5]), std::stof(tokens[6])),
+                                               Vector3f(std::stof(tokens[7]), std::stof(tokens[8]), std::stof(tokens[9])),
+                                               std::stof(tokens[10]),
+                                               Vector3f(std::stof(tokens[11]), std::stof(tokens[12]), std::stof(tokens[13]))));
+                tokens.clear();
                 break;
 
             
