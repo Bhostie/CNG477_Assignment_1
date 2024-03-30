@@ -34,9 +34,6 @@ class sphere{
         int get_material_index(){
             return material_index;
         }
-        int get_material_index(){
-            return material_index;
-        }
 
         bool hit_check(const ray& r) {
 
@@ -58,16 +55,6 @@ class sphere{
             float t = (-b - std::sqrt(discriminant)) / (2.0 * a);
             return r.origin() + r.direction() * t;
         }
-        Vector3f getHitPoint(const ray& r) {
-            Vector3f oc = r.origin() - center;
-            double a = r.direction().normalized().dot(r.direction().normalized());
-            double b = oc.dot(r.direction().normalized()) * 2.0;
-            double c = oc.dot(oc) - radius*radius;
-            float discriminant = b*b - 4*a*c;
-            float t = (-b - std::sqrt(discriminant)) / (2.0 * a);
-            return r.origin() + r.direction() * t;
-        }
-        
         Vector3f get_normal(const Vector3f& p) const {
             return (p - center).normalized();
         }
