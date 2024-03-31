@@ -1,6 +1,7 @@
 /* 
 CNG 477 HW1 - K. Baris Gokmen - UNFINISHED
-NOTE: Use "./main > output1.ppm" to create a .ppm file.
+NOTE: Use "./main input1.txt > output1.ppm" to create a .ppm file.     [FOR MAC]
+NOTE: Use "main.exe input1.txt > output1.ppm" to create a .ppm file.     [FOR WINDOWS]
 */
 #include <iostream>
 #include <vector>
@@ -22,9 +23,9 @@ using Eigen::Vector3f;
 using Eigen::Matrix3f;
 
 void write_color(std::ostream &out, Vector3f pixel_color) {
-    out << static_cast<int>(255 * pixel_color.x()) << ' '
-        << static_cast<int>(255 * pixel_color.y()) << ' '
-        << static_cast<int>(255 * pixel_color.z()) << '\n';
+    out << static_cast<int>(pixel_color.x()) << ' '
+        << static_cast<int>(pixel_color.y()) << ' '
+        << static_cast<int>(pixel_color.z()) << '\n';
 }
 
 Vector3f ray_color(const ray& r,
@@ -47,14 +48,14 @@ Vector3f ray_color(const ray& r,
 
         triangle t = tList[i];
         if (t.hit_check(r) == true){
-        return Vector3f(1, 1, 1);
+        return Vector3f(255, 255, 255);
         }
     }
     for(int i=0; i<mList.size(); i++){
 
         mesh m = mList[i];
         if (m.hit_check(r) == true){
-        return Vector3f(1, 1, 1);
+        return Vector3f(255, 255, 255);
         }
     }
     return background;
