@@ -28,6 +28,9 @@ void write_color(std::ostream &out, Vector3f pixel_color) {
         << static_cast<int>(pixel_color.z()) << '\n';
 }
 
+float distance(Vector3f a, Vector3f b){
+    return (a - b).norm();
+}
 
 /*This function will check if there are any object between hitpoint and the other point lights*/
 bool check_shadow(Vector3f hitPoint, vector<PointLight>plList, vector<sphere>& sList, vector<triangle>& tList, vector<mesh>& mList, float ShadowRayEpsilon){
@@ -37,23 +40,32 @@ bool check_shadow(Vector3f hitPoint, vector<PointLight>plList, vector<sphere>& s
         Vector3f lightPos = pl.get_position();
         Vector3f shadowRayOrigin = hitPoint + lightDir * ShadowRayEpsilon;
         Vector3f shadowRayDirection = lightDir;
-        ray shadowRay(hitPoint + shadowRayOrigin , shadowRayDirection);
+        ray shadowRay(shadowRayOrigin , shadowRayDirection);
         for(int j=0; j<sList.size(); j++){
             sphere s = sList[j];
-            if(s.hit_check(shadowRay) == true && s.getHitPoint(shadowRay).norm() < lightPos.norm()){
+            if(s.hit_check(shadowRay) == true && distance(s.getHitPoint(shadowRay), lightPos) < distance(shadowRayOrigin, lightPos) ){
                 return true;
+            }
+            else{
+                return false;
             }
         }
         for(int j=0; j<tList.size(); j++){
             triangle t = tList[j];
-            if(t.hit_check(shadowRay) == true && t.getHitPoint(shadowRay).norm() < lightPos.norm()){
+            if(t.hit_check(shadowRay) == true && distance(t.getHitPoint(shadowRay), lightPos) < distance(shadowRayOrigin, lightPos) ){
                 return true;
+            }
+            else{
+                return false;
             }
         }
         for(int j=0; j<mList.size(); j++){
             mesh m = mList[j];
-            if(m.hit_check(shadowRay) == true && m.getHitPoint(shadowRay).norm() < lightPos.norm()){
+            if(m.hit_check(shadowRay) == true && distance(m.getHitPoint(shadowRay), lightPos) < distance(shadowRayOrigin, lightPos) ){
                 return true;
+            }
+            else{
+                return false;
             }
         }
     }

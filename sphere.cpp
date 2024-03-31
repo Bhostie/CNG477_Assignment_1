@@ -36,6 +36,17 @@ Vector3f sphere::getHitPoint(const ray& r) {
 Vector3f sphere::get_normal(const Vector3f& p) const {
     return (p - center).normalized();
 }
+
+float sphere::getHitPointDistance(const ray& r){
+    Vector3f oc = r.origin() - center;
+    double a = r.direction().normalized().dot(r.direction().normalized());
+    double b = oc.dot(r.direction().normalized()) * 2.0;
+    double c = oc.dot(oc) - radius*radius;
+    float discriminant = b*b - 4*a*c;
+    float t = (-b - std::sqrt(discriminant)) / (2.0 * a);
+    return t;
+}
+
 Vector3f sphere::get_color(vector<PointLight>& plList, const ray& r, Material& material, Vector3f ambientLight){
     Vector3f hitPoint = getHitPoint(r);
     Vector3f normal = get_normal(hitPoint);
