@@ -6,9 +6,6 @@
 #include <algorithm>
 #include "material.h"
 using std::max;
-#include <algorithm>
-#include "material.h"
-using std::max;
 using Eigen::Vector3f;
 using Eigen::Vector4f;
 using Eigen::Vector2i;
@@ -23,8 +20,6 @@ floating point numbers for R, G, and B channels, respectively.
 while rendering. You can use their indexes to differentiate between them, same index will 
 not be defined for more than one point light source.
 */
-
-
 class PointLight{
     private:
         int index;
@@ -32,42 +27,13 @@ class PointLight{
         Vector3f intensity;
     public:
         PointLight(){}
-        PointLight(int i, Vector3f pos, Vector3f inten){
-            index = i;
-            position = pos;
-            intensity = inten;
-        }
-        Vector3f get_position(){
-            return position;
-        }
-        Vector3f get_intensity(){
-            return intensity;
-        }
-        int get_index(){
-            return index;
-        }
-        Vector3f get_direction(Vector3f point){
-            return (position - point).normalized();
-        }
-        float get_distance(Vector3f point){
-            return (position - point).norm();
-        }
-        Vector3f get_color(Vector3f point, Vector3f normal, Vector3f view, Material material, Vector3f ambientIntensity){
-            Vector3f lightDir = (position - point).normalized();
-            Vector3f diffuseColor = material.get_diffuseColor();
-            Vector3f ambientColor = material.get_ambientColor();
-            Vector3f specularColor = material.get_specularColor();
-            float phongExponent = material.get_phongExponent();
-            Vector3f mirrorColor = material.get_mirrorColor();
-            Vector3f lightIntensity = intensity;
-            Vector3f ambient = ambientColor.cwiseProduct(ambientIntensity);
-            float diff = max(0.0f, normal.dot(lightDir));
-            Vector3f diffuse = diff * diffuseColor.cwiseProduct(lightIntensity);
-            Vector3f reflectDir = (2.0f * normal.dot(lightDir) * normal - lightDir).normalized();
-            float spec = max(0.0f, view.dot(reflectDir));
-            Vector3f specular = pow(spec, phongExponent) * specularColor.cwiseProduct(lightIntensity);
-            return ambient + diffuse + specular;
-        }
+        PointLight(int i, Vector3f pos, Vector3f inten);
+        Vector3f get_position();
+        Vector3f get_intensity();
+        int get_index();
+        Vector3f get_direction(Vector3f point);
+        float get_distance(Vector3f point);
+        Vector3f get_color(Vector3f point, Vector3f normal, Vector3f view, Material material, Vector3f ambientIntensity);
 };
 
 #endif
