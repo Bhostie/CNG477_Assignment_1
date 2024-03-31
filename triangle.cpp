@@ -8,10 +8,13 @@ triangle::triangle(int ti, int mi, Vector3f pi1, Vector3f pi2, Vector3f pi3){
     p3 = pi3;
 }
 
-bool triangle::hit_check(const ray& r){
+
+// Parametric method that uses barycentric coordinates.
+// THIS METHOD IS BUGGY, IT CAUSES SOME TRIANGLES TO BE INVISIBLE OR CREATES UNWANTED SHADOWS
+bool triangle::hit_checkOLD(const ray& r){
     Vector3f p1_p2 = p2 - p1;
     Vector3f p1_p3 = p3 - p1;
-    Vector3f normal = p1_p2.cross(p1_p3); // Compute the triangle norma
+    Vector3f normal = p1_p2.cross(p1_p3); // Compute the triangle normal
     float detA = r.direction().dot(normal);
     // Check if the ray and the triangle are parallel or nearly parallel
     if (detA > -1e-6 && detA < 1e-6)
@@ -24,6 +27,48 @@ bool triangle::hit_check(const ray& r){
     // Check if the intersection point is inside the triangle
     return (beta > 0) && (gamma > 0) && (beta + gamma < 1);
 }
+
+// This hit_check function uses implicit method. It works more accurately than the previous one.
+bool triangle::hit_check(const ray& r){
+    
+    //Normal
+    Vector3f p1_p2 = p2 - p1;
+    Vector3f p1_p3 = p3 - p1;
+    Vector3f normal = p1_p2.cross(p1_p3); // Compute the triangle normal
+
+    //Ray-plane intersection
+    //Find the plane by the normal and one of the points
+    float d = -normal.dot(p1);
+    float t = -(normal.dot(r.origin()) + d) / normal.dot(r.direction());
+    if(t < 0){
+        return false;
+    }
+    Vector3f hitPoint = r.origin() + t * r.direction();
+    //Check if the hit point is inside the triangle
+    Vector3f C;
+    Vector3f edge0 = p2 - p1;
+    Vector3f vp0 = hitPoint - p1;
+    C = edge0.cross(vp0);
+    if(normal.dot(C) < 0){
+        return false;
+    }
+    Vector3f edge1 = p3 - p2;
+    Vector3f vp1 = hitPoint - p2;
+    C = edge1.cross(vp1);
+    if(normal.dot(C) < 0){
+        return false;
+    }
+    Vector3f edge2 = p1 - p3;
+    Vector3f vp2 = hitPoint - p3;
+    C = edge2.cross(vp2);
+    if(normal.dot(C) < 0){
+        return false;
+    }
+    return true;
+
+
+}
+
 
 float triangle::determinant(Vector3f pi1, Vector3f pi2, Vector3f pi3){
     Matrix3f matrix;

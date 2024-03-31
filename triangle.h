@@ -36,6 +36,7 @@ class triangle{
         triangle(){}
         triangle(int ti, int mi, Vector3f pi1, Vector3f pi2, Vector3f pi3);
         bool hit_check(const ray& r);
+        bool hit_checkOLD(const ray& r);
         float determinant(Vector3f pi1, Vector3f pi2, Vector3f pi3);
         Vector3f getHitPoint(const ray& r);
         float getHitPointDistance(const ray& r);
