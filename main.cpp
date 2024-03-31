@@ -63,6 +63,7 @@ Vector3f ray_color(const ray& r,
 
 int main(int argc, char* argv[]) {
 
+
     // Error message for missing or extra arguments
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " input_file\n";
@@ -77,8 +78,10 @@ int main(int argc, char* argv[]) {
     int image_width = cam.getWidth();
     int image_height = cam.getHeight();
 
+    std::ofstream outputFile("output.ppm");
+
     // Render 
-    std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
+    outputFile << "P3\n" << image_width << " " << image_height << "\n255\n";
 
     for (int j = 0 ; j < image_height ; j++) {
         std::cerr << "\rScanlines remaining: " << image_height - j << ' ' << std::flush;
@@ -94,15 +97,12 @@ int main(int argc, char* argv[]) {
             myparser.BackgroundColor,
             myparser.AmbientLight
             ); 
-            if (argc == 3 && std::string(argv[2]) == "-d") {
-                write_color(std::cout, pixel_color);
-            } else {
-                std::ofstream outputFile("output.ppm");
-                write_color(outputFile, pixel_color);
-                outputFile.close();
-            }
+            
+            write_color(outputFile, pixel_color);
+            
         }
     }
+    outputFile.close();
 
     std::cerr << "\nDone.\n";
 }
