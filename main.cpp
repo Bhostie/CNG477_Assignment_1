@@ -68,12 +68,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     // Getting inout file name from command line
-    // Error message for missing or extra arguments
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " input_file\n";
-        return 1;
-    }
-    // Getting inout file name from command line
     string str = argv[1];
     parser myparser(str);
 
@@ -99,7 +93,13 @@ int main(int argc, char* argv[]) {
             myparser.BackgroundColor,
             myparser.AmbientLight
             ); 
-            write_color(std::cout, pixel_color);
+            if (argc == 3 && std::string(argv[2]) == "-d") {
+                write_color(std::cout, pixel_color);
+            } else {
+                std::ofstream outputFile("output.ppm");
+                write_color(outputFile, pixel_color);
+                outputFile.close();
+            }
         }
     }
 
