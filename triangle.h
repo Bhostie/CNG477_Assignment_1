@@ -32,6 +32,9 @@ class triangle{
         Vector3f p1;
         Vector3f p2;
         Vector3f p3;
+
+        Vector3f normal;
+        Vector3f hitPoint;
     public:
         triangle(){}
         triangle(int ti, int mi, Vector3f pi1, Vector3f pi2, Vector3f pi3);

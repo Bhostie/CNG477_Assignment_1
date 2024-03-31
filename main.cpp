@@ -46,26 +46,17 @@ bool check_shadow(Vector3f hitPoint, vector<PointLight>plList, vector<sphere>& s
             if(s.hit_check(shadowRay) == true && distance(s.getHitPoint(shadowRay), lightPos) < distance(shadowRayOrigin, lightPos) ){
                 return true;
             }
-            else{
-                return false;
-            }
         }
         for(int j=0; j<tList.size(); j++){
             triangle t = tList[j];
             if(t.hit_check(shadowRay) == true && distance(t.getHitPoint(shadowRay), lightPos) < distance(shadowRayOrigin, lightPos) ){
                 return true;
             }
-            else{
-                return false;
-            }
         }
         for(int j=0; j<mList.size(); j++){
             mesh m = mList[j];
             if(m.hit_check(shadowRay) == true && distance(m.getHitPoint(shadowRay), lightPos) < distance(shadowRayOrigin, lightPos) ){
                 return true;
-            }
-            else{
-                return false;
             }
         }
     }

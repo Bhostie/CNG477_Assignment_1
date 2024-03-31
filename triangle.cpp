@@ -6,6 +6,8 @@ triangle::triangle(int ti, int mi, Vector3f pi1, Vector3f pi2, Vector3f pi3){
     p1 = pi1;
     p2 = pi2;
     p3 = pi3;
+
+    normal = (p2 - p1).cross(p3 - p1).normalized();
 }
 
 
@@ -31,11 +33,6 @@ bool triangle::hit_checkOLD(const ray& r){
 // This hit_check function uses implicit method. It works more accurately than the previous one.
 bool triangle::hit_check(const ray& r){
     
-    //Normal
-    Vector3f p1_p2 = p2 - p1;
-    Vector3f p1_p3 = p3 - p1;
-    Vector3f normal = p1_p2.cross(p1_p3); // Compute the triangle normal
-
     //Ray-plane intersection
     //Find the plane by the normal and one of the points
     float d = -normal.dot(p1);
@@ -43,7 +40,7 @@ bool triangle::hit_check(const ray& r){
     if(t < 0){
         return false;
     }
-    Vector3f hitPoint = r.origin() + t * r.direction();
+    hitPoint = r.origin() + t * r.direction();
     //Check if the hit point is inside the triangle
     Vector3f C;
     Vector3f edge0 = p2 - p1;
@@ -78,16 +75,10 @@ float triangle::determinant(Vector3f pi1, Vector3f pi2, Vector3f pi3){
     return matrix.determinant();
 }
 Vector3f triangle::getHitPoint(const ray& r){
-    Vector3f p1_p2 = p2 - p1;
-    Vector3f p1_p3 = p3 - p1;
-    Vector3f normal = p1_p2.cross(p1_p3); // Compute the triangle normal
-    float detA = r.direction().dot(normal);
-    float invDetA = 1.0f / detA;
-    Vector3f p1_to_origin = r.origin() - p1;
-    float beta = invDetA * p1_to_origin.dot(p1_p3.cross(r.direction()));
-    float gamma = invDetA * r.direction().dot(p1_p2.cross(p1_to_origin));
-    float alpha = 1 - beta - gamma;
-    return alpha * p1 + beta * p2 + gamma * p3;
+
+    float d = -normal.dot(p1);
+    float t = -(normal.dot(r.origin()) + d) / normal.dot(r.direction());
+    return r.origin() + t * r.direction();
 }
 
 int triangle::get_material_index(){
