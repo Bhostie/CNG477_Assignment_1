@@ -2,11 +2,13 @@
 #define TRIANGLE_H
 
 #include <iostream>
-
+#include <vector>
 #include"Eigen/Dense"
+#include "pointlight.h"
 #include "ray.h"
 using Eigen::Vector3f;
 using Eigen::Matrix3f;
+using std::vector;
 
 /*
 #Triangle: A triangle will be represented with a material index and its vertex positions.  
@@ -35,6 +37,11 @@ class triangle{
         triangle(int ti, int mi, Vector3f pi1, Vector3f pi2, Vector3f pi3);
         bool hit_check(const ray& r);
         float determinant(Vector3f pi1, Vector3f pi2, Vector3f pi3);
+        Vector3f getHitPoint(const ray& r);
+        float getHitPointDistance(const ray& r);
+        int get_material_index();
+        Vector3f get_color(vector<PointLight>& plList, const ray& r, Material& material, Vector3f ambientLight);
+        Vector3f get_ambient_color(Material& material, Vector3f ambientLight);
 };
 
 #endif

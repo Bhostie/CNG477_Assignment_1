@@ -69,3 +69,7 @@ Vector3f sphere::get_color(vector<PointLight>& plList, const ray& r, Material& m
 
     return color;
 }
+
+Vector3f sphere::get_ambient_color(Material& material, Vector3f ambientLight){
+    return material.get_ambientColor().cwiseProduct(ambientLight);
+}

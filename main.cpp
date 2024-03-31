@@ -28,6 +28,39 @@ void write_color(std::ostream &out, Vector3f pixel_color) {
         << static_cast<int>(pixel_color.z()) << '\n';
 }
 
+
+/*This function will check if there are any object between hitpoint and the other point lights*/
+bool check_shadow(Vector3f hitPoint, vector<PointLight>plList, vector<sphere>& sList, vector<triangle>& tList, vector<mesh>& mList, float ShadowRayEpsilon){
+    for(int i=0; i<plList.size(); i++){
+        PointLight pl = plList[i];
+        Vector3f lightDir = pl.get_direction(hitPoint);
+        Vector3f lightPos = pl.get_position();
+        Vector3f shadowRayOrigin = hitPoint + lightDir * ShadowRayEpsilon;
+        Vector3f shadowRayDirection = lightDir;
+        ray shadowRay(hitPoint + shadowRayOrigin , shadowRayDirection);
+        for(int j=0; j<sList.size(); j++){
+            sphere s = sList[j];
+            if(s.hit_check(shadowRay) == true && s.getHitPoint(shadowRay).norm() < lightPos.norm()){
+                return true;
+            }
+        }
+        for(int j=0; j<tList.size(); j++){
+            triangle t = tList[j];
+            if(t.hit_check(shadowRay) == true && t.getHitPoint(shadowRay).norm() < lightPos.norm()){
+                return true;
+            }
+        }
+        for(int j=0; j<mList.size(); j++){
+            mesh m = mList[j];
+            if(m.hit_check(shadowRay) == true && m.getHitPoint(shadowRay).norm() < lightPos.norm()){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
 Vector3f ray_color(const ray& r,
                     vector<sphere>& sList,
                     vector<triangle>& tList,
@@ -35,12 +68,18 @@ Vector3f ray_color(const ray& r,
                     vector<PointLight>&plList,
                     vector<Material>&materialList,
                     Vector3f background,
-                    Vector3f ambientLight) {
+                    Vector3f ambientLight,
+                    float ShadowRayEpsilon) {
 
     for(int i=0; i<sList.size(); i++){
 
         sphere s = sList[i];
         if (s.hit_check(r) == true){
+
+            if(check_shadow(s.getHitPoint(r), plList, sList, tList, mList, ShadowRayEpsilon) == true){
+                return s.get_ambient_color(materialList[s.get_material_index() - 1], ambientLight);
+            }
+
         return s.get_color(plList,r, materialList[s.get_material_index() - 1], ambientLight);
         }
     }
@@ -48,18 +87,27 @@ Vector3f ray_color(const ray& r,
 
         triangle t = tList[i];
         if (t.hit_check(r) == true){
-        return Vector3f(255, 255, 255);
+
+            if(check_shadow(t.getHitPoint(r), plList, sList, tList, mList, ShadowRayEpsilon) == true){
+                return t.get_ambient_color(materialList[t.get_material_index() - 1], ambientLight);
+            }
+        return t.get_color(plList,r, materialList[t.get_material_index() - 1], ambientLight);
         }
     }
     for(int i=0; i<mList.size(); i++){
 
         mesh m = mList[i];
         if (m.hit_check(r) == true){
-        return Vector3f(255, 255, 255);
+            if(check_shadow(m.getHitPoint(r), plList, sList, tList, mList, ShadowRayEpsilon) == true){
+                return m.get_ambient_color(materialList[m.get_material_index() - 1], ambientLight);
+            }
+        return m.get_color(plList,r, materialList[m.get_material_index() - 1], ambientLight);
         }
     }
     return background;
 }
+
+
 
 int main(int argc, char* argv[]) {
 
@@ -95,7 +143,8 @@ int main(int argc, char* argv[]) {
             myparser.pointLightList,
             myparser.materialList,
             myparser.BackgroundColor,
-            myparser.AmbientLight
+            myparser.AmbientLight,
+            myparser.ShadowRayEpsilon
             ); 
             
             write_color(outputFile, pixel_color);
