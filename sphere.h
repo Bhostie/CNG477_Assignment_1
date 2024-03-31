@@ -5,7 +5,6 @@
 #include <vector>
 
 #include"Eigen/Dense"
-#include "ray.h"
 #include "pointlight.h"
 #include "camera.h"
 using Eigen::Vector3f;
@@ -27,8 +26,10 @@ class sphere{
         bool hit_check(const ray& r);
         Vector3f getHitPoint(const ray& r);
         Vector3f get_normal(const Vector3f& p) const;
+        float getHitPointDistance(const ray& r);
 
         Vector3f get_color(vector<PointLight>& plList, const ray& r, Material& material, Vector3f ambientLight);
+        Vector3f get_ambient_color(Material& material, Vector3f ambientLight);
         
 
 };
