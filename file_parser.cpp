@@ -28,9 +28,6 @@ parser::parser(string name){
         ? "" : line.substr(0, line.find_last_not_of("\r")+1));
     }
 
-    //TEMP
-    pointLightList.push_back(PointLight(1, Vector3f(0, 0, 0), Vector3f(1000, 1000, 1000)));
-
     vector<string> tokens;
     int exit_key=0;
     int parse_mode=0;
@@ -159,7 +156,15 @@ parser::parser(string name){
                 break;
             
             case 7:
-                // TODO: Implement PointLight
+                getTokens(tokens, whole_file[i]);
+                i++;
+                getTokens(tokens, whole_file[i]);
+                i++;
+                getTokens(tokens, whole_file[i]);
+                pointLightList.push_back(PointLight(std::stoi(tokens[0]), 
+                                                    Vector3f(std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3])),
+                                                    Vector3f(std::stof(tokens[4]), std::stof(tokens[5]), std::stof(tokens[6]))));
+                tokens.clear();
                 break;
 
             case 8:
