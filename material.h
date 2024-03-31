@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include"Eigen/Dense"
-#include "ray.h"
+
 using Eigen::Vector3f;
 using Eigen::Vector4f;
 using Eigen::Vector2i;
@@ -41,32 +41,13 @@ class Material{
         Vector3f mirrorColor;
     public:
         Material(){}
-        Material(int i, Vector3f a, Vector3f d, Vector3f s, float p, Vector3f m){
-            index = i;
-            ambientColor = a;
-            diffuseColor = d;
-            specularColor = s;
-            phongExponent = p;
-            mirrorColor = m;
-        }
-        Vector3f get_ambientColor(){
-            return ambientColor;
-        }
-        Vector3f get_diffuseColor(){
-            return diffuseColor;
-        }
-        Vector3f get_specularColor(){
-            return specularColor;
-        }
-        float get_phongExponent(){
-            return phongExponent;
-        }
-        Vector3f get_mirrorColor(){
-            return mirrorColor;
-        }
-        int get_index(){
-            return index;
-        }
+        Material(int i, Vector3f a, Vector3f d, Vector3f s, float p, Vector3f m);
+        Vector3f get_ambientColor();
+        Vector3f get_diffuseColor();
+        Vector3f get_specularColor();
+        float get_phongExponent();
+        Vector3f get_mirrorColor();
+        int get_index();
 };
 
 
